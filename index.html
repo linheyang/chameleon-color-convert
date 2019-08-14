@@ -1,0 +1,284 @@
+<!--
+ * @Description: Renderer process
+ * @Author: Lin Heyang
+ * @Date: 2019-08-10 21:38:21
+ * @LastEditTime: 2019-08-14 20:58:40
+ * @LastEditors: Lin Heyang
+ -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Chameleon</title>
+  <link rel="stylesheet" href="lib/assets/css/jquery-ui.min.css">
+  <link rel="stylesheet" href="lib/assets/css/index.css">
+</head>
+<body>
+  <div id="tool-bar">
+    <img id="more" class="icon-bar" src="lib/assets/img/more_white.png" alt="more">	
+    <img id="stick" class="icon-bar" src="lib/assets/img/stick_white.png" alt="stick">
+    <img id="min" class="icon-bar" src="lib/assets/img/min_white.png" alt="mini">
+    <img id="close" class="icon-bar" src="lib/assets/img/close_white.png" alt="close">
+  </div>
+  <div class="main-body">
+    <div id="caption">@<span id="name-color"></span></div>
+    <table>
+      <tbody>
+        <tr>
+          <td width="65px">RGB</td>
+          <td width="235px"><input type="text" class="color-input" id="rgb-color" onfocus="this.select()"></td>
+        </tr>
+        <tr>
+          <td>CMYK</td>
+          <td><input type="text" class="color-input" id="cmyk-color" onfocus="this.select()"></td>
+        </tr>
+        <tr>
+          <td>HEX</td>
+          <td><input type="text" class="color-input" id="hex-color" onfocus="this.select()"></td>
+        </tr>
+        <tr>
+          <td>HSB</td>
+          <td><input type="text" class="color-input" id="hsb-color" onfocus="this.select()"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <pre id="width-caculator" style="display: none"></pre>
+
+  <script src='lib/assets/js/jquery-1.12.4.min.js' type='text/javascript' charset='utf-8'></script>
+  <!-- 解决jQuery在Electron中的$冲突 -->
+  <script>if (typeof module === 'object') {window.jQuery = window.$ = module.exports;};</script>
+  
+  <script src='lib/assets/js/jquery-ui.min.js' type='text/javascript' charset='utf-8'></script>
+
+  <script type='text/javascript'>
+    const convert = require('color-convert');
+    const isDev = require('electron-is-dev');
+
+    $(document).ready(function(){	
+    var mainColor = [];  //以RBG色彩空间存储的用户输入颜色，如：[208, 100, 67]
+
+    //生成一种随机颜色用于初始显示
+    function randomFrom(lowerValue,upperValue)
+    {
+      return Math.floor(Math.random() * (upperValue - lowerValue + 1) + lowerValue);
+    }
+    var randomRGBColor = [randomFrom(0,255),randomFrom(0,255),randomFrom(0,255)];//生成一种随机颜色
+    var randomColorName = convert.rgb.keyword(randomRGBColor);//将随机颜色转化为最相近的标准色
+    mainColor = convert.keyword.rgb(randomColorName);
+
+    $('#rgb-color').val(mainColor.join(', '));
+    $('#cmyk-color').val(convert.rgb.cmyk(mainColor).join(', '));
+    $('#hex-color').val('#'+convert.rgb.hex(mainColor)); 
+    $('#hsb-color').val(convert.rgb.hsv(mainColor).join(', '));
+    $('#name-color').text(randomColorName);
+    //当颜色名称太长时，颜色名称字号变小
+    colorNameLength();
+
+    //控制input框的长度
+    $('input').each(function(event){input_resize(this)});
+
+    $('body').animate({
+        backgroundColor: '#'+convert.rgb.hex(mainColor)
+      });
+
+      //当初始化的颜色发白时，将文字和icon颜色变为灰色
+      if (isLightColor(mainColor)) {
+        $('body').css('color', 'DimGray');
+        $('.color-input').css('color', 'DimGray');
+        $('#more').attr('src','lib/assets/img/more_black.png');
+        $('#stick').attr('src','lib/assets/img/stick_black.png');
+        $('#min').attr('src','lib/assets/img/min_black.png');
+        $('#close').attr('src','lib/assets/img/close_black.png');
+      } else {
+        $('body').css('color', 'white');
+        $('.color-input').css('color', 'white');
+        $('#more').attr('src','lib/assets/img/more_white.png');
+        $('#stick').attr('src','lib/assets/img/stick_white.png');
+        $('#min').attr('src','lib/assets/img/min_white.png');
+        $('#close').attr('src','lib/assets/img/close_white.png');
+      }
+
+      //当在input框中输入颜色时
+    $('.color-input').on('input oninput', function(){
+      var inputColor = $(this).val();
+
+      switch ($(this).attr('id'))
+      {
+      case 'rgb-color':
+        mainColor = inputColor.trim().split(/，|,/);
+        $('#cmyk-color').val(convert.rgb.cmyk(mainColor).join(', '));
+        $('#hex-color').val('#' + convert.rgb.hex(mainColor));
+        $('#hsb-color').val(convert.rgb.hsv(mainColor).join(', '));
+        break;
+      case 'cmyk-color':
+        mainColor = convert.cmyk.rgb(inputColor.trim().split(/，|,/));
+        $('#rgb-color').val(mainColor.join(', '));
+        $('#hex-color').val('#' + convert.rgb.hex(mainColor));
+        $('#hsb-color').val(convert.rgb.hsv(mainColor).join(', '));
+        break;
+      case 'hex-color':
+        mainColor = convert.hex.rgb(inputColor.trim().replace(/#/,''));
+        $('#rgb-color').val(mainColor.join(', '));
+        $('#cmyk-color').val(convert.rgb.cmyk(mainColor).join(', '));
+        $('#hsb-color').val(convert.rgb.hsv(mainColor).join(', '));
+        break;
+      case 'hsb-color':
+        mainColor = convert.hsv.rgb(inputColor.trim().split(/，|,/));
+        $('#rgb-color').val(mainColor.join(', '));
+        $('#cmyk-color').val(convert.rgb.cmyk(mainColor).join(', '));
+        $('#hex-color').val('#' + convert.rgb.hex(mainColor));
+        break;
+      }
+      $('#name-color').text(convert.rgb.keyword(mainColor));
+      
+      //当颜色名称太长时，颜色名称字号变小
+      colorNameLength();
+
+      $('body').animate({
+          backgroundColor: '#' + convert.rgb.hex(mainColor)
+        });
+
+      //控制input框的长度
+        $('input').each(function(event){input_resize(this)});
+
+        //当用户输入的颜色发白时，将文字颜色变为灰色，icon-bar变成灰色
+        if (isLightColor(mainColor)) {
+          $('body, .color-input, .title-line').css('color', 'DimGray');
+          $('#more').attr('src','lib/assets/img/more_black.png');
+          $('#stick').attr('src','lib/assets/img/stick_black.png');
+          $('#min').attr('src','lib/assets/img/min_black.png');
+          $('#close').attr('src','lib/assets/img/close_black.png');
+        } else {
+          $('body, .color-input, .title-line').css('color', 'white');
+          $('#more').attr('src','lib/assets/img/more_white.png');
+          $('#stick').attr('src','lib/assets/img/stick_white.png');
+          $('#min').attr('src','lib/assets/img/min_white.png');
+          $('#close').attr('src','lib/assets/img/close_white.png');
+        }
+    });
+
+      //鼠标悬停icon-bar时，如果输入颜色发白，则icon背景色变暗，否则icon背景色变亮。
+      $('.icon-bar').mouseover(function() {
+        if (isLightColor(mainColor)) {
+          $(this).css('backgroundColor', 'rgba(0, 0, 0, 0.1)');
+        } else {
+          $(this).css('backgroundColor', 'rgba(255, 255, 255, 0.3)');
+        }
+        
+      });
+
+      //鼠标离开icon-bar时，背景色恢复原状。除了置顶按钮需要判断状态。
+      $('.icon-bar').not('#stick').mouseleave(function() {
+        $(this).css('background', 'none');
+      });
+
+      //鼠标悬停input框时，input框背景色变亮
+      $('.color-input').mouseover(function() {
+        $(this).css('backgroundColor', 'rgba(255, 255, 255, 0.3)');
+      });
+
+      //鼠标离开input框时，如果此时没有获得焦点，则背景色消失
+      $('.color-input').mouseleave(function() {
+        if (document.activeElement.id !== $(this).attr('id')) {
+          $(this).css('background', 'none');
+        }
+      });
+
+      //当input框获得焦点时，背景色变亮
+      $('.color-input').focus(function() {
+        $(this).css('backgroundColor', 'rgba(255, 255, 255, 0.3)');
+      });
+
+      //当input框失去焦点时，背景色消失
+      $('.color-input').blur(function() {
+        $(this).css('background', 'none');
+      });
+
+      //在渲染和主进程之间传递消息
+      const {ipcRenderer} = require('electron');
+
+      //关闭程序
+      $('#close').click(function() {
+        ipcRenderer.send('close');
+      });
+
+      //打开“更多”窗口
+      $('#more').click(function() {
+        ipcRenderer.send('more');
+      });
+
+      //最小化程序
+      $('#min').click(function() {
+        $('#min').css('background', 'none');
+        ipcRenderer.send('min');
+        
+      });
+
+      //置顶程序
+      var isTop = false; //程序打开时，默认为不置顶
+      $('#stick').click(function() {
+        isTop = !isTop;
+        ipcRenderer.send('#stick');
+        if (isTop === false) {
+          $('#stick').css('background', 'none');
+        } else {
+          if (isLightColor(mainColor)) {
+            $(this).css('backgroundColor', 'rgba(0, 0, 0, 0.1)');
+          } else {
+            $(this).css('backgroundColor', 'rgba(255, 255, 255, 0.3)');
+          }
+          
+        }
+      });
+
+      $('#stick').mouseleave(function() {
+        if (isTop == false) {
+          $(this).css('background', 'none');
+        }
+        
+      });
+
+      $('button').click(function() {
+        ipcRenderer.send('pickColor');
+      })
+
+      //判断此时背景色是否为浅色
+      function isLightColor(RGBColor) {
+        let [r, g, b] = RGBColor;
+        let gray = 0.29900 * r + 0.58700 * g + 0.11400 * b; //MATLAB的灰度算法，灰度在0-255之间。
+        if (isDev) {console.log(`gray = ${gray}`)}
+        if (gray>200 ) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+
+      //input长度改变
+      function input_resize(obj){
+        $('#width-caculator').html(obj.value);
+        $('#width-caculator').css({
+          fontSize: $(obj).css('fontSize'),
+          fontFamily: $(obj).css('fontFamily')
+        });
+        $(obj).css('width',$('#width-caculator').css('width'));
+      }
+
+      //颜色名的字号根据长度而定
+      function colorNameLength(){
+        var colorNameLen = $('#name-color').text().length;
+        if (colorNameLen > 13) {
+          var colorNameFontSize = 44.86 - 1.14 * colorNameLen;
+          $('#caption').css('fontSize', `${colorNameFontSize}px`);
+        } else {
+          $('#caption').css('fontSize', '30px');
+        }
+      }
+
+      });
+  </script>
+
+</body>
+</html>

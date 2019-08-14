@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>more</title>
+  <link rel="stylesheet" href="../lib/assets/css/more.css">
+</head>
+<body>
+  <div id="tool-bar">
+    <img id="close" src="../lib/assets/img/close_black.png" alt="close">
+  </div>
+  <div class="align-column-center">
+    <img id="logo" src="../lib/assets/img/icon/icon.png" alt="Chameleon_logo">
+    <p class="text-center app-name">Chameleon</p>
+    <p class="text-center app-slogen">Simple color converter</p>
+    <p class="text-center text-pay">Consider buying me a coffee to support me.</p>
+    <div class="two-qr">
+      <img src="../lib/assets/img/qrcode/qr-alipay.png" alt="微信支付二维码">
+        <img src="../lib/assets/img/qrcode/qr-wechatpay.png" alt="支付宝二维码">
+    </div>
+    <div id="paypal">
+      <img src="../lib/assets/img/paypal.svg" alt="paypal">
+      <span onclick="openExternalWeb('paypal')">paypal.me/chamelon</span>
+    </div>
+    <p class="text-center version">Chameleon: 0.5.0</p>
+    <div class="text-center support">
+      <span class="support-link" onclick="openExternalWeb('electron')">Electron</span>
+      <span>&nbsp;|&nbsp;</span>
+      <span class="support-link" onclick="openExternalWeb('node')">Node</span>
+      <span>&nbsp;|&nbsp;</span>
+      <span class="support-link" onclick="openExternalWeb('chromium')">Chromium</span>
+      <p class="text-center copyright">&copy;&nbsp;2019&nbsp;linheyang@outlook.com</p>
+    </div>
+  </div>
+
+  <script src="../lib/assets/js/jquery-1.12.4.min.js" type="text/javascript" charset="utf-8"></script>
+  <!-- 解决jQuery在Electron中的$冲突 -->
+  <script>if (typeof module === 'object') {window.jQuery = window.$ = module.exports;};</script>
+  <script type="text/javascript">
+    const {shell} = require('electron');
+    $(document).ready(function(){
+      openExternalWeb = function(website) {
+        switch (website) {
+          case 'electron':
+            shell.openExternal('https://electronjs.org/');
+            break;
+          case 'node':
+            shell.openExternal('https://nodejs.org/');
+            break;
+          case 'chromium':
+            shell.openExternal('https://www.chromium.org/');
+            break;
+          case 'paypal':
+            shell.openExternal('https://paypal.me/chamelon/');
+            break;
+        }
+      }
+      
+      //鼠标悬停关闭按钮时，如果输入颜色发白，则icon背景色变暗，否则icon背景色变亮。
+      $("#close").mouseover(function() {
+        $(this).css('backgroundColor', '#cccccc');
+        $(this).attr('src', '../lib/assets/img/close_white.png');
+      });
+
+      //鼠标离开icon-bar时，背景色恢复原状。
+      $("#close").mouseleave(function() {
+        $(this).css('background', 'none');
+        $(this).attr('src', '../lib/assets/img/close_black.png');
+      });
+
+      //在渲染和主进程之间传递消息
+      const {ipcRenderer} = require('electron');
+
+      //关闭程序
+      $("#close").click(function() {
+        ipcRenderer.send('close-more');
+      });
+    })
+  </script>
+</body>
+</html>

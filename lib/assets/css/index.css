@@ -1,0 +1,70 @@
+*:focus {
+  outline: none;
+  -webkit-user-select: none;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+body {
+  font-family: Verdana;
+  color: white;
+  margin: 0px;
+}
+
+.color-input {
+  border: none;
+  border-radius: 12px;
+  background: none;
+  font-family: Verdana;
+  font-size: 20px;
+  caret-color: #2789e9;
+  padding: 2px 12px;
+  color: white;
+  max-width: 205px;
+  min-width: 30px;
+  -webkit-app-region: no-drag;
+}
+
+table {
+  font-size: 20px;
+  line-height: 45px;
+  display: -webkit-flex;
+  justify-content: center;
+  -webkit-user-select: none;
+  width: 300px;
+}
+
+#tool-bar {
+  width: 100%;
+  background: none;
+  padding-bottom: 10px;
+  display: -webkit-flex;
+  justify-content: flex-end;
+  -webkit-app-region: drag; /*使可拖拽*/
+}
+
+.icon-bar {
+  width: 22px;
+  height: 22px;
+  padding: 7px 9px;
+  justify-content: center;
+  -webkit-app-region: no-drag;
+  -webkit-user-select: none;
+}
+
+.main-body {
+  display: -webkit-flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 60px 5px 0px 35px;
+}
+
+#caption {
+  text-align: left;
+  font-size: 30px;
+  font-weight: 600;
+  padding: 20px 40px 20px 0px;
+}
+
+#name-color {
+  text-transform: capitalize; /*首字母大写*/
+}

@@ -1,0 +1,122 @@
+* {
+  -webkit-app-region: drag; /*使可拖拽*/
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+body {
+  -webkit-app-region: drag;
+  -webkit-user-select: none;
+  margin: 0px;
+}
+
+#tool-bar {
+  width: 100%;
+  background: none;
+  padding-bottom: 10px;
+  display: -webkit-flex;
+  justify-content: flex-end;
+  -webkit-app-region: drag; /*使可拖拽*/
+}
+
+#close {
+  width: 18px;
+  height: 18px;
+  padding: 7px 9px;
+  justify-content: center;
+  -webkit-app-region: no-drag;
+}
+
+.align-column-center {
+  display: -webkit-flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+#logo {
+  width: 130px;
+  height: 130px;
+  margin: 0 auto;
+}
+
+.two-qr {
+  display: -webkit-flex;
+  justify-content: center;
+}
+
+.two-qr>img {
+  width: 120px;
+  height: 120px;
+  padding: 0px 10px;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.version {
+  margin: 20px auto 2px auto;
+  color: gray;
+  font-size: 12px;
+}
+
+.copyright {
+  font-size: 13px;
+  margin: 8px auto;
+}
+
+.app-name {
+  font-size: 25px;
+  color: #ff7c1c;
+  font-weight: 600;
+  margin: 1px auto;
+}
+
+.app-slogen {
+  font-size: 10px;
+  color: #ff7c1c;
+  letter-spacing: 2px;
+  margin: 0px auto;
+}
+
+.text-pay {
+  font-family: 'Microsoft Yahei';
+  font-size: 15px;
+  margin: 10px 0;
+}
+
+.support-link {
+  color: gray;
+  -webkit-app-region: no-drag;
+  cursor: pointer;
+}
+
+.support{
+  margin: 2px 0;
+  color: gray;
+  font-family: Verdana;
+  font-size: 13px;
+  -webkit-app-region: no-drag;
+}
+
+#paypal {
+  display: -webkit-flex;
+  justify-content: center;
+  align-items: flex-end;
+  margin: 5px auto;
+}
+
+#paypal>img {
+  width: 50px;
+  margin-right: 8px;
+}
+
+#paypal>span {
+  font-size: 13px;
+  cursor: pointer;
+  -webkit-app-region: no-drag;
+}
+
+#paypal>span:hover,
+.support-link:hover  {
+  text-decoration: underline;
+}
