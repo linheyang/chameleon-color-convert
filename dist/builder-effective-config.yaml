@@ -1,0 +1,10 @@
+directories:
+  output: ./dist
+  buildResources: build
+appId: com.electron.chemeleon-color-convert
+copyright: Copyright © 2019 linheyang
+productName: Chemeleon color convert
+win:
+  target: portable
+  icon: build/icon.png
+electronVersion: 4.0.5

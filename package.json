@@ -1,5 +1,5 @@
 {
-  "name": "chameleon",
+  "name": "chemeleon-color-convert",
   "version": "0.5.0",
   "description": "Simple color converter",
   "main": "main.js",
@@ -10,31 +10,24 @@
     "dist": "electron-builder"
   },
   "author": "Lin Heyang",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "electron": "^4.0.0"
   },
   "dependencies": {
     "color-convert": "^1.9.3",
-    "electron-is-dev": "^1.0.1",
-    "screenshot-desktop": "^1.5.3"
+    "electron-is-dev": "^1.0.1"
   },
   "build": {
-    "appId": "com.electron.${name}",
-    "copyright": "Copyright © 2018 ${author}",
-    "productName": "Chameleon",
-    "dmg": {
-      "background": "",
-      "window": {
-        "x": 100,
-        "y": 100,
-        "width": 360,
-        "height": 460
-      }
+    "appId": "com.electron.chemeleon-color-convert",
+    "copyright": "Copyright © 2019 linheyang",
+    "productName": "Chemeleon color convert",
+    "directories": {
+      "output": "./dist"
     },
     "win": {
-      "icon": "./img/icon/icon.png",
-      "target": "portable"
+      "target": "portable",
+      "icon": "build/icon.png"
     }
   }
 }

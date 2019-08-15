@@ -2,7 +2,7 @@
  * @Description: Renderer process
  * @Author: Lin Heyang
  * @Date: 2019-08-10 21:38:21
- * @LastEditTime: 2019-08-14 20:58:40
+ * @LastEditTime: 2019-08-15 19:47:11
  * @LastEditors: Lin Heyang
  -->
 <!DOCTYPE html>
@@ -220,7 +220,7 @@
       var isTop = false; //程序打开时，默认为不置顶
       $('#stick').click(function() {
         isTop = !isTop;
-        ipcRenderer.send('#stick');
+        ipcRenderer.send('stick');
         if (isTop === false) {
           $('#stick').css('background', 'none');
         } else {

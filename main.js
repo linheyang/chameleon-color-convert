@@ -3,7 +3,7 @@
  * @Author: Lin Heyang
  * @Date: 2019-08-10 21:38:21
  * @LastEditors: Lin Heyang
- * @LastEditTime: 2019-08-14 21:01:32
+ * @LastEditTime: 2019-08-15 00:53:54
  */
 const electron = require('electron')
 const {app, BrowserWindow, globalShortcut, ipcMain, Menu, Tray} = electron
@@ -99,42 +99,7 @@ const isDev = require('electron-is-dev')
   // 部分 API 在 ready 事件触发后才能使用。
   app.on('ready', () => {
     createWindow()
-    // 注册一个 'Esc' 快捷键.
-    globalShortcut.register('Esc', () => {
-      if (colorPickerWin) {
-        colorPickerWin.close()
-      }
-    })
-
-    //为系统添加托盘
-    tray = new Tray('lib/assets/img/icon/icon.png')  // 添加托盘图标
-    const contextMenu = Menu.buildFromTemplate([
-      {
-        label: '退出', 
-        type: 'normal',
-        click: () => {
-          win.close()
-        }
-      }
-    ])
-    tray.setToolTip('Chamelon')
-    tray.setContextMenu(contextMenu)
-    tray.on('click', () => {
-      win.isVisible() ? win.hide() : win.show()
-    })
-  
-    //MacOS的高光模式
-    win.on('show', () => {
-      tray.setHighlightMode('always')
-    })
-    win.on('hide', () => {
-      tray.setHighlightMode('never')
-    })
-  
-    win.on('close', () => {
-      if (tray) tray.destroy()
-    })
-
+    
     //设置CSP HTTP头
     const { session } = require('electron')
     session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
